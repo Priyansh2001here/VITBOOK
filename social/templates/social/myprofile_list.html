@@ -1,26 +1,27 @@
 {% extends 'base.html'%}
 {% block content %}
-{% load static %}
+    {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/myprofile_list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/myprofile_list.css' %}">
 
-{#    This script is not working right now#}
-<script>
-    $(function () {
-        $("#tags").autocomplete({
-            source: {{ myprofile_list }}
+    {#    This script is not working right now#}
+    <script>
+        $(function () {
+            $("#tags").autocomplete({
+                source: {{ myprofile_list }}
+            });
         });
-    });
-</script>
 
-<style>
-    .myhead2 {
-        font-family: 'Times New Roman', Times, serif;
-        text-decoration: solid;
-    }
-</style>
+    </script>
 
-<body>
+    <style>
+        .myhead2 {
+            font-family: 'Times New Roman', Times, serif;
+            text-decoration: solid;
+        }
+    </style>
+
+    <body>
 
     <section class="section section_discover">
         <div class="container">
@@ -31,9 +32,9 @@
                     <hr>
 
                     <form class="form-inline"
-                        style="border-top-style: solid;margin-top: 2px;border-top-width: 0px;margin-bottom: 10px;">
+                          style="border-top-style: solid;margin-top: 2px;border-top-width: 0px;margin-bottom: 10px;">
                         <input id="tags" class="form-control mr-3" placeholder="Search a person"
-                            value="{{ request.GET.si }}" type="text" name="si" />
+                               value="{{ request.GET.si }}" type="text" name="si" />
                         <button class="btn btn-light m-2" type="submit" value="Search"><i
                                 class="fas fa-search"></i></button>
                     </form>
@@ -41,58 +42,111 @@
 
                     <div class="container">
                         {% if request.GET.si %}
-                        <p class="text-monospace text-muted">Showing results for {{ request.GET.si }}</p>
+                            <p class="text-monospace text-muted">Showing results for {{ request.GET.si }}</p>
                         {% endif %}
                     </div>
                     {% for n1 in myprofile_list %}
 
-                    <div class="card mb-3 infinite-item" style="max-width: 740px;">
-                        <div class="row no-gutters">
-                            <div class="col-md-4 img-fluid">
-                                <img src="/images/{{n1.pic}}" class="card-img" alt="Not provided">
-                            </div>
-                            <div class="col-md-8 ">
-                                <div class="card-body text-left">
+                        <div class="card mb-3 infinite-item" style="max-width: 740px;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4 img-fluid">
+                                    <img src="/images/{{n1.pic}}" class="card-img" alt="Not provided">
+                                </div>
+                                <div class="col-md-8 ">
+                                    <div class="card-body text-left">
 
 
-                                    <h5 class="card-title" style="margin-bottom: 0px;"><b>{{n1.user}}</b>
-                                        {{n1.uploaded_by}}
+                                        <h5 class="card-title" style="margin-bottom: 0px;"><b>{{n1.user}}</b>
+                                            {{n1.uploaded_by}}
 
-                                        {% if n1.user.is_superuser %}
+                                            {% if n1.user.is_superuser %}
 
-                                            <sup>
-                                                <img src="{% static 'images/verified.png' %}" alt="verified" width="20px" height="20px">
-                                            </sup>
+                                                <sup>
+                                                    <img src="{% static 'images/verified.png' %}" alt="verified" width="20px" height="20px">
+                                                </sup>
 
-                                        {% endif %}
-                                    </h5>
+                                            {% endif %}
+                                        </h5>
 
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>Name</b> : {{n1.name}}</p>
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>Age</b> : {{n1.age}}</p>
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>College</b> : {{n1.college}}</p>
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>Gender</b> : {{n1.gender}}</p>
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>Followers</b>: {{n1.followers}}
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>Following</b>: {{n1.following}}
-                                    </p>
-                                    <p class="card-text" style="margin-bottom: 0px;"><b>Relationship status</b>:
-                                        {{n1.status}}</p>
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>Name</b> : {{n1.name}}</p>
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>Age</b> : {{n1.age}}</p>
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>College</b> : {{n1.college}}</p>
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>Gender</b> : {{n1.gender}}</p>
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>Followers</b>: {{n1.followers}}
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>Following</b>: {{n1.following}}
+                                        </p>
+                                        <p class="card-text" style="margin-bottom: 0px;"><b>Relationship status</b>:
+                                            {{n1.status}}</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="container mb-2">
+                                    <a href="{% url 'profileDetail' n1.id %}" class="m-1 btn btn-dark btn-sm">View Profile</a>
+
+                                    {#-----------------------------------------------------------------------------------------------------------------------------#}
+                                    {#                                {% if n1.followed %}#}
+                                    {#                                    <a href="{% url 'unfollow' n1.id %}" class="m-1 btn btn-danger btn-sm">Unfollow</a>#}
+                                    {#                                {% else %}#}
+                                    {#                                    <a href="{% url 'follow' n1.id %}" class="m-1 btn btn-primary btn-sm">Follow</a>#}
+                                    {#                                {% endif %}#}
+
+                                    {{ n1.followed|json_script:"is_followed" }}
+                                    <div id="{{ n1.id }}">
+                                        <script>
+                                            function link_generator(followed, id) {
+                                                if (followed) {
+                                                    $('#'+id).html(`<button onclick="action_handler(${followed}, ${id})" class="m-1 btn btn-primary btn-sm">Follow</button>`)
+                                                } else {
+                                                    $('#'+id).html(`<button onclick="action_handler(${followed}, ${id})" class="m-1 btn btn-danger btn-sm">Unfollow</button>`)
+                                                }
+                                            }
+
+                                            function action_handler(followed, id){
+                                                const formData = new FormData()
+                                                formData.append('pk', id)
+                                                let action
+                                                if (followed){
+                                                    action = 'follow'
+                                                }else {
+                                                    action = 'unfollow'
+                                                }
+                                                formData.append('action', action)
+                                                const options = {
+                                                    method : 'POST',
+                                                    headers:{
+                                                        "X-CSRFToken": getCookie('csrftoken')
+                                                    },
+                                                    body: formData,
+                                                }
+                                                fetch('/social/profile/action',options)
+                                                .then(() => link_generator(!followed, id))
+                                            }
+
+                                            link_generator(document.getElementById('is_followed').textContent, {{ n1.id }})
+
+                                            function getCookie(name) {
+                                                let cookieValue = null;
+                                                if (document.cookie && document.cookie !== '') {
+                                                    let cookies = document.cookie.split(';');
+                                                    for (let i = 0; i < cookies.length; i++) {
+                                                        let cookie = cookies[i].trim();
+                                                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                return cookieValue;
+                                            }
+                                        </script>
+                                    </div>
+                                    {#-----------------------------------------------------------------------------------------------------------------------------#}
+
+                                    {#                                <a href="/social/mypost/?si={{n1.user}}" class=" btn btn-secondary btn-sm">View#}
+                                    {#                                    Posts.</a>#}
                                 </div>
                             </div>
-                            <hr>
-                            <div class="container mb-2">
-                                <a href="{% url 'profileDetail' n1.id %}" class="m-1 btn btn-dark btn-sm">View Profile</a>
-
-                                {% if n1.followed %}
-                                    <a href="{% url 'unfollow' n1.id %}" class="m-1 btn btn-danger btn-sm">Unfollow</a>
-                                {% else %}
-                                    <a href="{% url 'follow' n1.id %}" class="m-1 btn btn-primary btn-sm">Follow</a>
-                                {% endif %}
-
-{#                                <a href="/social/mypost/?si={{n1.user}}" class=" btn btn-secondary btn-sm">View#}
-{#                                    Posts.</a>#}
-                            </div>
                         </div>
-                    </div>
 
                     {% endfor %}
                 </div>
@@ -102,7 +156,6 @@
         </div>
     </section>
 
-</body>
-<hr>
-
+    </body>
+    <hr>
 {% endblock %}
