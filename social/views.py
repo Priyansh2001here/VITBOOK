@@ -13,8 +13,8 @@ from django.views.generic.detail import DetailView
 from django.db.models import Q
 
 from django.views.generic.edit import (UpdateView,
-                                        CreateView,
-                                        DeleteView )
+                                       CreateView,
+                                       DeleteView)
 
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -25,11 +25,11 @@ from django.http import JsonResponse
 
 from django.core.mail import send_mail
 
-                                            # Create your views here.
+# Create your views here.
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                    # NOTIFICATIONS
+# NOTIFICATIONS
 # -----------------------------------------------------------------------------------------------------------------------
 
 
@@ -44,15 +44,15 @@ def notification(request):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                    # Home View
+# Home View
 # -----------------------------------------------------------------------------------------------------------------------
 
 
-@method_decorator(login_required, name="dispatch")    
+@method_decorator(login_required, name="dispatch")
 class HomeView(ListView):
-
     template_name = "social/home.html"
     paginate_by = 7
+
     # global is_paginated = true
 
     def get_queryset(self):
@@ -67,7 +67,7 @@ class HomeView(ListView):
 
         # si = self.request.GET.get("si")
         # if si == None:
-            # si = ""
+        # si = ""
         # postList = postList.filter(Q(subject__icontains=si) | Q(msg__icontains=si)| Q(uploaded_by__name__icontains = si)).order_by("-id")
 
         LikeNoList = []
@@ -79,7 +79,7 @@ class HomeView(ListView):
 
             obList = PostLike.objects.filter(post=p1)
             p1.likedno = obList.count()
-            
+
             LikeNoList.append(p1.likedno)
 
             p1.likelist = []
@@ -89,8 +89,9 @@ class HomeView(ListView):
         mypost_list = postList
         return mypost_list
 
+
 # ----------------------------------------------------------------------------------------------------------------------
-                                 # Profile
+# Profile
 # -----------------------------------------------------------------------------------------------------------------------
 
 
@@ -107,7 +108,6 @@ def profiling(request, pk):
 
     noOfFollowers = followersList.count()
 
-
     followingList = FollowUser.objects.filter(followed_by__id=pk)
     followingList2 = []
     for e in followingList:
@@ -116,14 +116,14 @@ def profiling(request, pk):
     noOfFollowing = followingList.count()
 
     context = {'myprofile': profileData, 'photos': photos, 'totalPhotos': totalPhotos,
-               'following': followingList2, 'followers': followersList2 ,
+               'following': followingList2, 'followers': followersList2,
                'noOfFollowing': noOfFollowing, 'noOfFollowers': noOfFollowers}
 
     return render(request, 'social/profile_datail2.html', context)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                 # Friends
+# Friends
 # -----------------------------------------------------------------------------------------------------------------------
 
 #
@@ -159,7 +159,7 @@ def profiling(request, pk):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                         # Others
+# Others
 # -----------------------------------------------------------------------------------------------------------------------
 
 
@@ -182,7 +182,7 @@ class SupportView(TemplateView):
 @login_required
 def ub(request):
     blg = AddConfession.objects.all().order_by("-id")
-    paginator = Paginator(blg, 3) 
+    paginator = Paginator(blg, 3)
     page = request.GET.get('page', 1)
     blg = paginator.get_page(page)
     paginate_by = 6
@@ -194,8 +194,8 @@ def ub(request):
     except EmptyPage:
         blg = paginator.page(paginator.num_pages)
 
+    return render(request, "social/ub.html", {'blg': blg})
 
-    return render(request, "social/ub.html", {'blg' : blg })
 
 @login_required
 def Ubupload(request):
@@ -208,8 +208,8 @@ def Ubupload(request):
         if by != '' or to != '':
             instance = AddConfession.objects.create(
                 real=real,
-                by=by, 
-                to=to, 
+                by=by,
+                to=to,
                 confession=confession)
 
             instance.save()
@@ -245,12 +245,12 @@ def ContactViewUpload(request):
         branch = request.POST['branch']
         description = request.POST['description']
         real_sender = request.user.username
-        
+
         instance = Contact.objects.create(real_sender=real_sender,
-                                         by=by,
-                                         branch=branch,
-                                         subject=subject, 
-                                         description=description)
+                                          by=by,
+                                          branch=branch,
+                                          subject=subject,
+                                          description=description)
         instance.save()
         send_mail(
             'Your Form is Successfully Submitted',
@@ -279,12 +279,12 @@ def JoinViewUpload(request):
         suggestions = request.POST['suggestions']
         yname = request.POST['yname']
         real_sender = request.user.username
-        
+
         instance = Developer.objects.create(real_sender=real_sender,
-                                         yname=yname,
-                                         skills=skills,
-                                         branch=branch, 
-                                         suggestion=suggestions)
+                                            yname=yname,
+                                            skills=skills,
+                                            branch=branch,
+                                            suggestion=suggestions)
         instance.save()
         send_mail(
             'Your Form is Successfully Submitted',
@@ -303,7 +303,7 @@ def JoinViewUpload(request):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                            # MyProfile
+# MyProfile
 # -----------------------------------------------------------------------------------------------------------------------
 
 
@@ -332,14 +332,15 @@ class MyProfileListView(ListView):
         if si == None:
             si = ""
 
-        profList = MyProfile.objects.filter(Q(name__icontains=si) | Q(gender__icontains=si) | Q(status__icontains=si)).order_by("name")
+        profList = MyProfile.objects.filter(
+            Q(name__icontains=si) | Q(gender__icontains=si) | Q(status__icontains=si)).order_by("name")
 
         for p1 in profList:
             p1.followed = False
             ob = FollowUser.objects.filter(profile=p1, followed_by=self.request.user.myprofile)
             if ob:
                 p1.followed = True
-            obList = FollowUser.objects.filter(profile = p1)
+            obList = FollowUser.objects.filter(profile=p1)
             p1.followers = obList.count()
 
             followingList = FollowUser.objects.filter(followed_by=p1)
@@ -349,7 +350,7 @@ class MyProfileListView(ListView):
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-                                             # MyPost
+# MyPost
 # -----------------------------------------------------------------------------------------------------------------------
 
 # PROFILE
@@ -365,17 +366,16 @@ class MyPostListView(ListView):
         si = self.request.GET.get("si")
         if si == None:
             si = ""
-        return MyPost.objects.filter(Q(uploaded_by__name__icontains = si)).order_by("-id")
- 
+        return MyPost.objects.filter(Q(uploaded_by__name__icontains=si)).order_by("-id")
+
 
 # To upload a new post
-@method_decorator(login_required, name="dispatch")    
+@method_decorator(login_required, name="dispatch")
 class MyPostCreate(CreateView):
     model = MyPost
     fields = ["subject", "msg", "pic"]
 
     def form_valid(self, form):
-
         self.object = form.save()
         self.object.uploaded_by = self.request.user.myprofile
         self.object.save()
@@ -401,7 +401,7 @@ class MyPostDeleteView(DeleteView):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                         # VITHUB
+# VITHUB
 # -----------------------------------------------------------------------------------------------------------------------
 
 # VITHUB
@@ -416,7 +416,8 @@ class VithubListView(ListView):
         si = self.request.GET.get("si")
         if si == None:
             si = ""
-        return Vithub.objects.filter(Q(title__icontains = si) | Q(title__icontains = si)).order_by("-id")
+        return Vithub.objects.filter(Q(title__icontains=si) | Q(title__icontains=si)).order_by("-id")
+
 
 # To update your profile
 
@@ -424,7 +425,7 @@ class VithubListView(ListView):
 @method_decorator(login_required, name="dispatch")
 class VithubCreate(CreateView):
     model = Vithub
-    fields = ["title", "code", "language", "domain","description"]
+    fields = ["title", "code", "language", "domain", "description"]
 
     def form_valid(self, form):
         self.object = form.save()
@@ -447,17 +448,17 @@ class VithubDetailView(DetailView):
     model = Vithub
 
 
-@method_decorator(login_required, name="dispatch")    
+@method_decorator(login_required, name="dispatch")
 class VithubDeleteView(DeleteView):
     model = Vithub
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                            #CHAT
+# CHAT
 # -----------------------------------------------------------------------------------------------------------------------
 
 
-@method_decorator(login_required, name="dispatch") 
+@method_decorator(login_required, name="dispatch")
 class ChatView(ListView):
     model = Chat
     template_name = '/static/chat_list.html'
@@ -476,11 +477,11 @@ class CreateChatUser(View):
         )
 
         user = {
-                'id':obj.id,
-                'sender':obj.sender,
-                'message':obj.message,
-                'cr_date': obj.cr_date,
-                }
+            'id': obj.id,
+            'sender': obj.sender,
+            'message': obj.message,
+            'cr_date': obj.cr_date,
+        }
 
         data = {
             'user': user
@@ -489,39 +490,47 @@ class CreateChatUser(View):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                        # LIKE/FOLLOW/ATTENDENCE/GRADES
+# LIKE/FOLLOW/ATTENDENCE/GRADES
 # -----------------------------------------------------------------------------------------------------------------------
 
 
 def like(request, pk, page, *args, **kargs):
     post = MyPost.objects.get(pk=pk)
-    PostLike.objects.create(post=post, liked_by = request.user.myprofile)
+    PostLike.objects.create(post=post, liked_by=request.user.myprofile)
     return redirect('/social/home/' + "?page=" + page + '#' + str(pk))
 
 
 def unlike(req, pk, page, *args, **kargs):
     post = MyPost.objects.get(pk=pk)
-    PostLike.objects.filter(post=post, liked_by = req.user.myprofile).delete()
+    PostLike.objects.filter(post=post, liked_by=req.user.myprofile).delete()
     return redirect('/social/home/' + "?page=" + page + '#' + str(pk))
 
+####################################################################################################
 
-def follow(req, pk):
-    user = MyProfile.objects.get(pk=pk)
-    FollowUser.objects.create(profile=user, followed_by=req.user.myprofile)
-
-
-    ALL_FOLLOWERS.append(user)
-    # noti.follower = req.user.myprofile
-    # noti.followed = user
-
-    return HttpResponseRedirect(redirect_to="/social/profile")
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
-def unfollow(req, pk):
-    user = MyProfile.objects.get(pk=pk)
-    FollowUser.objects.filter(profile=user, followed_by=req.user.myprofile).delete()
-    return HttpResponseRedirect(redirect_to="/social/profile")
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def action(req):
+    profile_action = req.data.get('action')
+    if profile_action == 'follow':
+        usr_profile = MyProfile.objects.get(pk=req.data.get('pk'))
+        FollowUser.objects.create(profile=usr_profile, followed_by=req.user.myprofile)
+        ALL_FOLLOWERS.append(usr_profile)
+        return Response(status=200)
 
+    elif profile_action == 'unfollow':
+        usr_profile = MyProfile.objects.get(pk=req.data.get('pk'))
+        FollowUser.objects.filter(profile=usr_profile, followed_by=req.user.myprofile).delete()
+        return Response(status=200)
+    else:
+        return Response(status=404)
+
+############################################################################################################
 
 @login_required
 def attendance(request):
@@ -536,7 +545,7 @@ def grades(request):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-                                        # POLL
+# POLL
 # -----------------------------------------------------------------------------------------------------------------------
 
 
@@ -570,6 +579,7 @@ def poll_create(request):
     }
     return render(request, 'social/poll_create.html', context)
 
+
 @login_required
 def poll_vote(request, poll_id):
     poll = Poll.objects.get(pk=poll_id)
@@ -583,7 +593,6 @@ def poll_vote(request, poll_id):
             poll.option_two_count += 1
         else:
             return HttpResponse(400, 'Invalid form')
-
 
         poll.save()
 
@@ -613,4 +622,3 @@ def poll_results(request, poll_id):
         'poll': poll
     }
     return render(request, 'social/poll_results.html', context)
-
